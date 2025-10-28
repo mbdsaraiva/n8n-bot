@@ -1,0 +1,1574 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "dd63dd34-6355-45e4-85f1-e76381f8b034",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        1504,
+        2448
+      ],
+      "webhookId": "9e1e90ba-736e-4077-bbea-ba144be6d34a",
+      "credentials": {
+        "telegramApi": {
+          "id": "HLJFPMarGRyP9dmy",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "=1j7ctKQcrhludSbcZsItVOZ5wuHdVY3GYU1eTj_F0zm8",
+              "value": "YOUR_TEMPLATE_DOC_ID_FOR_CASE_1",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "=1TsXFFBtB5IZ2w0-GfzULEHOni4BL_0rljxe1HrG5SuI",
+              "value": "YOUR_TEMPLATE_DOC_ID_FOR_CASE_2",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "chatId",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "string"
+            },
+            {
+              "id": "4a72b53b-9754-42af-9b85-3b91fc06224b",
+              "name": "botToken",
+              "value": "8416479807:AAE_qwtpfINObDOIX9Pj6s5li7suopC5WKY",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "298ee494-bfbc-471b-8c59-f14eadea8c50",
+      "name": "Workflow Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1728,
+        2448
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/criardoc",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "3019b91a-233c-4d04-a8c7-7e3f89d2a99c"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text || $json.message.caption || '' }}\n",
+                    "rightValue": "/docmarcadores",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "2e2df700-b4dd-4591-a117-b20d603a7b0b"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/noticias",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "09b2f3d5-7565-42b9-83c6-a238574a571d"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.voice !== undefined }}",
+                    "rightValue": true,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true"
+                    },
+                    "id": "8a63ef8e-a75c-405c-8138-755feb6e4d23"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ true }}",
+                    "rightValue": true,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true"
+                    },
+                    "id": "63efb365-a55f-48c4-ae23-6717e2f0dace"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6fb13234-6cdf-497b-8d1e-cd60fefdc5b7",
+      "name": "Route by Command",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        1952,
+        2400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = $input.first().json.data;\nconst news = [];\n\n// Busca por padrões de links do G1\nconst matches = html.matchAll(/<a[^>]*href=\"([^\"]*g1\\.globo\\.com[^\"]*)\"[^>]*>([^<]+)<\\/a>/gi);\n\nlet count = 0;\nfor (const match of matches) {\n  if (count >= 10) break;\n  \n  const link = match[1];\n  const title = match[2].trim();\n  \n  if (title.length > 10 && !link.includes('javascript')) {\n    news.push({ title, link });\n    count++;\n  }\n}\n\nreturn [{ json: { news } }];"
+      },
+      "id": "e86fdb24-733d-48a4-8137-0e66ba330355",
+      "name": "Parse G1 News",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2960,
+        2448
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "Você é um assistente virtual do Telegram chamado MeuBot da empresa B2bot. Você ajuda usuários a utilizarem as funcionalidades do bot de forma amigável e clara. Sempre que você for acionado fale brevemente sobre a empresa, e dos serviços prestados, bem como fornecer as informacões de funcionalidades disponíveis.\nUm breve resumo da empresa pra que você possa se situar: \nA B2BIT é uma empresa de tecnologia comprometida em desenvolver soluções digitais inovadoras e personalizadas para empresas de diferentes setores. Fundada com o objetivo de conectar negócios a tecnologias de ponta, nossa equipe é especializada em desenvolver software, automatizar processos e implementar inteligência artificial para ajudar nossos clientes a atingir suas metas de forma eficiente e segura. \n\nOs serviços fornecidos pela empresa são os seguintes: \n1- Desenvolvimento de Aplicativos\n2- Desenvolvimento de Softwares\n3- Prototipagem de negócios digitais\n\nApós essa breve apresentação forneca as opções pro usuário.\n\n**FUNCIONALIDADES DISPONÍVEIS:**\n\n1. **Criar Documento Simples** (/criardoc)\n   - Comando: /criardoc [seu texto aqui]\n   - Exemplo: /criardoc Este é meu primeiro documento\n   - O bot cria um Google Doc com o texto fornecido e envia o PDF + link público\n\n2. **Criar Documento com Marcadores** (/docmarcadores)\n   - Para TEXTO: /docmarcadores seguido de:\n     Titulo: [título]\n     Texto: [conteúdo]\n   - Para IMAGEM: /docmarcadores na legenda + enviar foto\n     Titulo: [título]\n     Texto: [descrição]\n   - O bot substitui marcadores <<titulo>>, <<texto>>, <<imagem>>, <<data>>\n\n3. **Buscar Notícias do G1** (/noticias)\n   - Comando: /noticias\n   - O bot busca as 10 principais notícias da capa do G1\n\n4. **Transcrever Áudio** (automático)\n   - Basta enviar um áudio de voz\n   - O bot transcreve automaticamente usando IA\n   - Funciona melhor com áudios claros de 5-30 segundos\n\n**SUA FUNÇÃO:**\n- Responder perguntas sobre como usar o bot\n- Dar exemplos práticos e claros\n- Ser simpático, objetivo e usar emojis quando apropriado\n- Se o usuário pedir algo que o bot não faz, seja honesto mas amigável\n- Sempre que possível, mostre exemplos de comandos\n\n**IMPORTANTE:**\n- Use markdown para destacar comandos: `/criardoc`\n- Seja conciso - respostas de 2-4 linhas geralmente são suficientes\n- Se não souber algo, admita mas ajude com o que pode"
+        }
+      },
+      "id": "ec0a7ac9-eb36-4eb3-b950-8669537bc990",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        2544,
+        2960
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "id",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "id": "acb76891-4e7c-4d76-a79d-ec126f8db356",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2480,
+        3184
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Rpfkd7cz3oHGgIlF",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Workflow Configuration').first().json.chatId }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "f158ccf5-3ea4-4ad6-985b-dc876ad88ce9",
+      "name": "Send AI Response",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3008,
+        2960
+      ],
+      "webhookId": "26591237-d9b9-470d-98a3-7f470f9db293",
+      "credentials": {
+        "telegramApi": {
+          "id": "HLJFPMarGRyP9dmy",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "=1j7ctKQcrhludSbcZsItVOZ5wuHdVY3GYU1eTj_F0zm8",
+          "mode": "id"
+        },
+        "name": "=Documento - {{ $now.format('dd/MM/yyyy HH:mm') }}",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "=https://drive.google.com/drive/u/3/folders/1cNtHD9rG34gLZuuON_r-USe7krRQGM2c",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2560,
+        1856
+      ],
+      "id": "487bc2e6-9451-4179-87de-f5fa848db22d",
+      "name": "Copy file (case 1)",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "pT4GaFi60QLHgbJh",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://g1.globo.com/",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "27c2ddc2-aa1c-4437-adc0-0466d8e1772e",
+      "name": "Fetch G1 News (case 3)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2560,
+        2448
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "=1TsXFFBtB5IZ2w0-GfzULEHOni4BL_0rljxe1HrG5SuI"
+        },
+        "name": "=Documento - {{ $now.format('dd/MM/yyyy HH:mm') }}",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "=https://drive.google.com/drive/u/3/folders/1y6jXaJBp3OaX5Sy68M5s9mybm9eMSAs6"
+        },
+        "options": {}
+      },
+      "id": "04c65892-9ce2-4a20-b433-debe87fd1b55",
+      "name": "Copy file (With Image)",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2960,
+        2048
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "pT4GaFi60QLHgbJh",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $('Copy file (With Image)').first().json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "<<titulo>>",
+              "replaceText": "={{ $('Telegram Trigger').first().json.message.caption.split('\\n')[1]?.replace('Titulo:', '').trim() || 'Sem título' }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "<<texto>>",
+              "replaceText": "={{ $('Telegram Trigger').first().json.message.caption.split('\\n')[2]?.replace('Texto:', '').trim() || 'Sem texto' }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "<<data>>",
+              "replaceText": "={{ $now.format('dd/MM/yyyy HH:mm') }}"
+            }
+          ]
+        }
+      },
+      "id": "936e2fca-de4a-4559-9e3c-06beb70a37a9",
+      "name": "Replace Markers (With Image)",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3184,
+        2048
+      ],
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "JIhsoWseAUsH1cON",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Workflow Configuration').first().json.chatId }}",
+        "text": "=🔗 Link público do documento:\n\n`https://docs.google.com/document/d/{{ $('Copy file (With Image)').first().json.id }}/edit`\n\nVocê pode compartilhar este link com outras pessoas!",
+        "additionalFields": {}
+      },
+      "id": "331fef66-4493-451f-a969-32fa57f58bea",
+      "name": "Send Link (With Image)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4720,
+        2048
+      ],
+      "webhookId": "c37731cc-fa51-4d4d-ac78-28678ce18257",
+      "credentials": {
+        "telegramApi": {
+          "id": "HLJFPMarGRyP9dmy",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Copy file (With Image)').first().json.id }}"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "anyone"
+          }
+        },
+        "options": {}
+      },
+      "id": "97c561a5-7d38-4f6c-98ee-90e9cf75d201",
+      "name": "Share Doc Publicly (With Image)",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        4496,
+        2048
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "pT4GaFi60QLHgbJh",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Copy file (With Image)').first().json.id }}"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "application/pdf"
+            }
+          },
+          "fileName": "documento-com-imagem.pdf"
+        }
+      },
+      "id": "826f38ff-79ad-4169-abca-2a91e2827236",
+      "name": "Export Doc as PDF (With Image)",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        4048,
+        2048
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "pT4GaFi60QLHgbJh",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloudinary.com/v1_1/djcmfrenm/upload",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            },
+            {
+              "name": "upload_preset",
+              "value": "n8n_audio"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3168,
+        2704
+      ],
+      "id": "b6edbbde-9359-4221-82ad-3edcbf002c81",
+      "name": "Upload to Cloudinary"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.gladia.io/v2/transcription/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-gladia-key",
+              "value": "4d185bd8-def8-4789-9c4d-12b244ddad1e"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "audio_url",
+              "value": "={{ $json.secure_url }}"
+            },
+            {
+              "name": "language",
+              "value": "pt"
+            },
+            {
+              "name": "enable_code_switching",
+              "value": "false"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3376,
+        2704
+      ],
+      "id": "8c0c4aed-32c2-464a-99e9-c94512b0fce9",
+      "name": "Transcribe with Gladia"
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3584,
+        2704
+      ],
+      "id": "368e7465-8288-4746-a22e-2ee18338a905",
+      "name": "Wait for Processing",
+      "webhookId": "b6c10796-a329-4162-afdf-2f8e48a50808"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Transcribe with Gladia').first().json.result_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-gladia-key",
+              "value": "4d185bd8-def8-4789-9c4d-12b244ddad1e"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3792,
+        2704
+      ],
+      "id": "f9e393f3-a481-44fa-bb2e-9fe4d0157329",
+      "name": "Get Transcription Result"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "=1TsXFFBtB5IZ2w0-GfzULEHOni4BL_0rljxe1HrG5SuI",
+          "mode": "id"
+        },
+        "name": "=Documento - {{ $now.format('dd/MM/yyyy HH:mm') }}",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "=https://drive.google.com/drive/u/3/folders/1y6jXaJBp3OaX5Sy68M5s9mybm9eMSAs6",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2960,
+        2240
+      ],
+      "id": "69cfa40d-6804-408d-b350-113bb0f5a047",
+      "name": "Copy file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "pT4GaFi60QLHgbJh",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e968aade-2a2b-4467-af6a-5fe72b3b2dd5",
+              "leftValue": "={{ !!$json.message.photo || !!$json.message.document }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2560,
+        2144
+      ],
+      "id": "9940201a-da34-4b6b-9e68-6cc8989ff4df",
+      "name": "If image (case 2)"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/bot{{ $('Workflow Configuration').first().json.botToken }}/getFile?file_id={{ $json.message.voice.file_id }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2560,
+        2704
+      ],
+      "id": "a3c9989c-f63b-4758-aa1e-212f1ae5e4e3",
+      "name": "Get File Info (case 4)"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $('Copy file (case 1)').first().json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "=[texto]",
+              "replaceText": "={{ $('Telegram Trigger').first().json.message.text.replace('/criardoc', '').trim() }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "=[Data]",
+              "replaceText": "={{ $now.format('dd/MM/yyyy HH:mm') }}"
+            }
+          ]
+        }
+      },
+      "id": "b5f4ed3f-89a1-446a-b046-d7ba2ff58d6f",
+      "name": "Replace Text",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        2960,
+        1856
+      ],
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "JIhsoWseAUsH1cON",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $('Copy file').first().json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "=<<titulo>>",
+              "replaceText": "={{ $('Telegram Trigger').first().json.message.text.split('\\n')[1]?.replace('Titulo:', '').trim() || 'Sem título' }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "=<<texto>>",
+              "replaceText": "={{ $('Telegram Trigger').first().json.message.text.split('\\n')[2]?.replace('Texto:', '').trim() || 'Sem texto' }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "=<<data>>",
+              "replaceText": "={{ $now.format('dd/MM/yyyy HH:mm') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3184,
+        2240
+      ],
+      "id": "479dad51-a52d-4c6a-bcaf-e9d0627cfbd7",
+      "name": "Replaces Markers",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "JIhsoWseAUsH1cON",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Copy file').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "application/pdf"
+            }
+          },
+          "fileName": "documento-marcadores.pdf"
+        }
+      },
+      "id": "4fb4bfa7-c3dd-4319-9d32-638dccdde975",
+      "name": "Export Doc as PDF 2",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        3392,
+        2240
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "pT4GaFi60QLHgbJh",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Telegram Trigger').first().json.message.photo[$('Telegram Trigger').first().json.message.photo.length - 1].file_id }}",
+        "additionalFields": {}
+      },
+      "id": "dcf0b54f-6437-4965-9e6b-9ea816bec6b2",
+      "name": "Get a file",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3408,
+        2048
+      ],
+      "webhookId": "3ecb93ee-9b62-4e5b-be46-88052e692f4c",
+      "credentials": {
+        "telegramApi": {
+          "id": "HLJFPMarGRyP9dmy",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        3632,
+        2048
+      ],
+      "id": "1ed9ffa8-af1c-4de6-9860-0cc5bedc575f",
+      "name": "imageBase64 Converter"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://script.google.com/macros/s/AKfycbxkjdJh_zWMnw6oIGSBrqEkxFra8QtpefuBlP33Zg9n-mCgIURCVpHv_5sP8804zZis/exec",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"docId\": \"{{ $('Copy file (With Image)').first().json.id }}\",\n  \"marker\": \"<<imagem>>\",\n  \"mimeType\": \"{{ $('Get a file').first().binary.data.mimeType }}\",\n  \"imageBase64\": \"{{ $json.data }}\"\n}\n",
+        "options": {}
+      },
+      "id": "7213b614-1bef-4064-82f0-3dea5dd909c2",
+      "name": "Script Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3824,
+        2048
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Copy file (case 1)').first().json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "application/pdf"
+            }
+          },
+          "fileName": "documento.pdf"
+        }
+      },
+      "id": "ac4a643a-78ef-4a4f-aedd-42b8079fd172",
+      "name": "Export Doc as PDF 1",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        3184,
+        1856
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "pT4GaFi60QLHgbJh",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendDocument",
+        "chatId": "={{ $('Workflow Configuration').first().json.chatId }}",
+        "binaryData": true,
+        "binaryPropertyName": "=data",
+        "additionalFields": {
+          "caption": "=  📄 Documento criado com sucesso!\n  \n  📅 Data: {{ $now.format('dd/MM/yyyy HH:mm') }}"
+        }
+      },
+      "id": "109e69c9-c9a7-4798-b8e5-c4c46e8be2db",
+      "name": "Send PDF 1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3408,
+        1856
+      ],
+      "webhookId": "3798402f-c46e-4aa5-ac7f-71c6a75d3bc9",
+      "credentials": {
+        "telegramApi": {
+          "id": "HLJFPMarGRyP9dmy",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Copy file (case 1)').first().json.id }}",
+          "mode": "id"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "anyone"
+          }
+        },
+        "options": {}
+      },
+      "id": "5fc3b320-a56e-4b45-af7e-8b0358889f5a",
+      "name": "Share Doc Publicly 1",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        3632,
+        1856
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "pT4GaFi60QLHgbJh",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Workflow Configuration').first().json.chatId }}",
+        "text": "=🔗 Link público do documento:\n\n`https://docs.google.com/document/d/{{ $('Copy file (case 1)').first().json.id }}/edit`\n\nVocê pode compartilhar este link com outras pessoas!",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3856,
+        1856
+      ],
+      "id": "ed68519d-d8bd-4975-853e-86f1ef53084f",
+      "name": "Send link 1",
+      "webhookId": "0b8e83c5-bce6-45d8-a27b-f327b4759e6c",
+      "credentials": {
+        "telegramApi": {
+          "id": "HLJFPMarGRyP9dmy",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendDocument",
+        "chatId": "={{ $('Workflow Configuration').first().json.chatId }}",
+        "binaryData": true,
+        "additionalFields": {
+          "caption": "=📄 Documento criado com sucesso!\n\n📅 Data: {{ $now.format('dd/MM/yyyy HH:mm') }}"
+        }
+      },
+      "id": "0301f0a9-69bc-498e-a0bd-b675d3b46abf",
+      "name": "Send PDF (With Image)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4272,
+        2048
+      ],
+      "webhookId": "25f2aa80-1942-4e4a-8195-36b64671370b",
+      "credentials": {
+        "telegramApi": {
+          "id": "HLJFPMarGRyP9dmy",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendDocument",
+        "chatId": "={{ $('Workflow Configuration').first().json.chatId }}",
+        "binaryData": true,
+        "binaryPropertyName": "=data",
+        "additionalFields": {
+          "caption": "=  📄 Documento criado com sucesso!\n  \n  📅 Data: {{ $now.format('dd/MM/yyyy HH:mm') }}"
+        }
+      },
+      "id": "2fd47e9e-36cb-4564-b8bd-911458e59a2f",
+      "name": "Send PDF 2",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3616,
+        2240
+      ],
+      "webhookId": "3798402f-c46e-4aa5-ac7f-71c6a75d3bc9",
+      "credentials": {
+        "telegramApi": {
+          "id": "HLJFPMarGRyP9dmy",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Copy file').first().json.id }}",
+          "mode": "id"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "anyone"
+          }
+        },
+        "options": {}
+      },
+      "id": "b25eae1f-6230-49bc-8632-e774b17b5966",
+      "name": "Share Doc Publicly 2",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        3840,
+        2240
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "pT4GaFi60QLHgbJh",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Workflow Configuration').first().json.chatId }}",
+        "text": "=🔗 Link público do documento:\n\n`https://docs.google.com/document/d/{{ $('Copy file').first().json.id }}/edit`\n\nVocê pode compartilhar este link com outras pessoas!\n",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4064,
+        2240
+      ],
+      "id": "ed33c582-c003-4370-8aba-d12a04b8d1d9",
+      "name": "Send link 2",
+      "webhookId": "0b8e83c5-bce6-45d8-a27b-f327b4759e6c",
+      "credentials": {
+        "telegramApi": {
+          "id": "HLJFPMarGRyP9dmy",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Workflow Configuration').first().json.chatId }}",
+        "text": "=📰 *Notícias do G1*\n\n{{ $json.news.map((n, i) => `${i+1}. ${n.title}\n${n.link}`).join('\\n\\n') }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "548d91cf-ce05-4d25-90e6-44a090c3399e",
+      "name": "Send News",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3184,
+        2448
+      ],
+      "webhookId": "c7f59ec6-f8ef-45ec-8aaf-265095ae93d9",
+      "credentials": {
+        "telegramApi": {
+          "id": "HLJFPMarGRyP9dmy",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/file/bot{{ $('Workflow Configuration').first().json.botToken }}/{{ $json.result.file_path }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2960,
+        2704
+      ],
+      "id": "2e3dac48-14fa-4d88-af85-6bdb31546e48",
+      "name": "Download Audio"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "=*🎤 Transcrição do Áudio:*  {{ $json.result.transcription.full_transcript }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4000,
+        2704
+      ],
+      "id": "8d54d13f-3acb-41c1-89f2-2d7e28e96887",
+      "name": "Send Transcription",
+      "webhookId": "398c4fc9-5384-4e29-8670-514cc3d7d6ee",
+      "credentials": {
+        "telegramApi": {
+          "id": "HLJFPMarGRyP9dmy",
+          "name": "Telegram account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Configuration": {
+      "main": [
+        [
+          {
+            "node": "Route by Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Command": {
+      "main": [
+        [
+          {
+            "node": "Copy file (case 1)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If image (case 2)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fetch G1 News (case 3)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get File Info (case 4)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse G1 News": {
+      "main": [
+        [
+          {
+            "node": "Send News",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy file (case 1)": {
+      "main": [
+        [
+          {
+            "node": "Replace Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch G1 News (case 3)": {
+      "main": [
+        [
+          {
+            "node": "Parse G1 News",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy file (With Image)": {
+      "main": [
+        [
+          {
+            "node": "Replace Markers (With Image)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Markers (With Image)": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Share Doc Publicly (With Image)": {
+      "main": [
+        [
+          {
+            "node": "Send Link (With Image)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Export Doc as PDF (With Image)": {
+      "main": [
+        [
+          {
+            "node": "Send PDF (With Image)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Cloudinary": {
+      "main": [
+        [
+          {
+            "node": "Transcribe with Gladia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe with Gladia": {
+      "main": [
+        [
+          {
+            "node": "Wait for Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Processing": {
+      "main": [
+        [
+          {
+            "node": "Get Transcription Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Transcription Result": {
+      "main": [
+        [
+          {
+            "node": "Send Transcription",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy file": {
+      "main": [
+        [
+          {
+            "node": "Replaces Markers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If image (case 2)": {
+      "main": [
+        [
+          {
+            "node": "Copy file (With Image)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Copy file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get File Info (case 4)": {
+      "main": [
+        [
+          {
+            "node": "Download Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Text": {
+      "main": [
+        [
+          {
+            "node": "Export Doc as PDF 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replaces Markers": {
+      "main": [
+        [
+          {
+            "node": "Export Doc as PDF 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Export Doc as PDF 2": {
+      "main": [
+        [
+          {
+            "node": "Send PDF 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "imageBase64 Converter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "imageBase64 Converter": {
+      "main": [
+        [
+          {
+            "node": "Script Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Script Request": {
+      "main": [
+        [
+          {
+            "node": "Export Doc as PDF (With Image)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Export Doc as PDF 1": {
+      "main": [
+        [
+          {
+            "node": "Send PDF 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send PDF 1": {
+      "main": [
+        [
+          {
+            "node": "Share Doc Publicly 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Share Doc Publicly 1": {
+      "main": [
+        [
+          {
+            "node": "Send link 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send PDF (With Image)": {
+      "main": [
+        [
+          {
+            "node": "Share Doc Publicly (With Image)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send PDF 2": {
+      "main": [
+        [
+          {
+            "node": "Share Doc Publicly 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Share Doc Publicly 2": {
+      "main": [
+        [
+          {
+            "node": "Send link 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Audio": {
+      "main": [
+        [
+          {
+            "node": "Upload to Cloudinary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1ccc1e66-819e-4650-863f-eb96823837ba",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "df8510934f2781c1c2bb2c4c05b7a29be3ae2c78f5690f61301f3ff1638e0e2f"
+  },
+  "id": "eHCkYYPgZbf3Ehit",
+  "tags": []
+}
